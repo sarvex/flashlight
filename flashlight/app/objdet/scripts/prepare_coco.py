@@ -64,7 +64,7 @@ if __name__ == "__main__":
     for (split, (img_folder, ann_file)) in paths.items():
         img_folder = os.path.join(root, img_folder)
         ann_file = os.path.join(root, 'annotations', ann_file)
-        output_file = os.path.join(args.output_dir, split + '.lst')
+        output_file = os.path.join(args.output_dir, f'{split}.lst')
         create_training_list(img_folder, ann_file, output_file)
 
 

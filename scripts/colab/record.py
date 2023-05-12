@@ -123,7 +123,7 @@ def record_audio(filename):
 
     process = (
         ffmpeg.input("pipe:0")
-        .output(filename + ".48kHz.wav", format="wav")
+        .output(f"{filename}.48kHz.wav", format="wav")
         .run_async(
             pipe_stdin=True,
             pipe_stdout=True,
@@ -135,4 +135,4 @@ def record_audio(filename):
     output, err = process.communicate(input=binary)
     if process.returncode != 0:
         print("Error during recording")
-    convert(filename + ".48kHz.wav", filename + ".wav")
+    convert(f"{filename}.48kHz.wav", f"{filename}.wav")

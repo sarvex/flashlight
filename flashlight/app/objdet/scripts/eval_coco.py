@@ -16,8 +16,7 @@ from pycocotools.cocoeval import COCOeval
 
 def convert_to_xywh(boxes):
     xmin, ymin, xmax, ymax = np.split(boxes, 4, axis=1)
-    result = np.concatenate([xmin, ymin, xmax - xmin, ymax - ymin], axis=1);
-    return result
+    return np.concatenate([xmin, ymin, xmax - xmin, ymax - ymin], axis=1)
 
 def softmax(x, axis=0):
     """Compute softmax values for each sets of scores in x."""
@@ -45,8 +44,10 @@ def postprocess_fn(out_logits, out_bbox, target_sizes):
 
     scale_fct = np.concatenate([img_w, img_h, img_w, img_h], axis=1);
     boxes = boxes * scale_fct[:, None, :]
-    results = [{'scores': s, 'labels': l, 'boxes': b} for s, l, b in zip(scores, labels, boxes)]
-    return results;
+    return [
+        {'scores': s, 'labels': l, 'boxes': b}
+        for s, l, b in zip(scores, labels, boxes)
+    ]
 
 
 
@@ -77,7 +78,7 @@ def prepare_for_coco_detection(predictions):
 
 def main(directory, coco_data):
     data_type='val2017'
-    ann_file='{}/annotations/instances_{}.json'.format(coco_data, data_type)
+    ann_file = f'{coco_data}/annotations/instances_{data_type}.json'
     coco=COCO(ann_file)
 
 
@@ -86,7 +87,7 @@ def main(directory, coco_data):
 
     glob_path = os.path.join(directory, '**', 'detection*.array')
     files = glob.glob(glob_path)
-    assert(len(files) > 0)
+    assert files
     for f in files:
 
         image_sizes = af.read_array(f, key='imageSizes').to_ndarray()
@@ -99,11 +100,11 @@ def main(directory, coco_data):
 
         results = postprocess_fn(scores, bboxes, image_sizes)
 
-        res = { id : output for id, output in zip(image_ids, results) };
+        res = dict(zip(image_ids, results));
         results = prepare_for_coco_detection(res)
 
 
-        image_ids = [ id for id in image_ids ];
+        image_ids = list(image_ids);
 
         all_results.extend(results)
         all_image_ids.extend(image_ids)

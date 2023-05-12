@@ -22,4 +22,4 @@ if __name__ == "__main__":
                 for segment in segments:
                     (_, _, start, duration, word) = segment.split(' ')
                     end = float(start) + float(duration)
-                    ofile.write('{}\t{}\t{}\n'.format(start, end, word))
+                    ofile.write(f'{start}\t{end}\t{word}\n')
